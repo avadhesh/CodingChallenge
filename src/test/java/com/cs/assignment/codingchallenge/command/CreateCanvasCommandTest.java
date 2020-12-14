@@ -7,12 +7,14 @@ import com.cs.assignment.codingchallenge.validator.NonEmptyInputValidator;
 import com.cs.assignment.codingchallenge.validator.ValidationResult;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -33,10 +35,18 @@ class CreateCanvasCommandTest {
     @InjectMocks
     private CreateCanvasCommand command;
 
+    @BeforeEach
+    void init()
+    {
+        ReflectionTestUtils.setField(command, "maxHeight", 50);
+        ReflectionTestUtils.setField(command, "maxWidth", 50);
+    }
+
 
     @SneakyThrows
     @Test
     void executeValidScenario() {
+
         ValidationResult validationResult = new ValidationResult();
 
         Mockito.when(nonEmptyInputValidator.validate(Optional.of("5 5"))).thenReturn(validationResult);
@@ -60,6 +70,21 @@ class CreateCanvasCommandTest {
         Mockito.when(nonEmptyInputValidator.validate(Optional.of("5 -5"))).thenReturn(validationResult);
         Mockito.when(numberFormatValidator.validate(new String[]{"5", "-5"})).thenReturn(validationResult);
         Assertions.assertThrows(InputValidationException.class, () -> command.execute(Optional.of("5 -5")));
+
+    }
+
+    @Test
+    void executeExceedingMaxHeightWidthScenario()
+    {
+        ValidationResult validationResult = new ValidationResult();
+
+        Mockito.when(nonEmptyInputValidator.validate(Optional.of("51 5"))).thenReturn(validationResult);
+        Mockito.when(numberFormatValidator.validate(new String[]{"51", "5"})).thenReturn(validationResult);
+        Assertions.assertThrows(InputValidationException.class, () -> command.execute(Optional.of("51 5")));
+
+        Mockito.when(nonEmptyInputValidator.validate(Optional.of("5 51"))).thenReturn(validationResult);
+        Mockito.when(numberFormatValidator.validate(new String[]{"5", "51"})).thenReturn(validationResult);
+        Assertions.assertThrows(InputValidationException.class, () -> command.execute(Optional.of("5 51")));
 
     }
 

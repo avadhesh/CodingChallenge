@@ -100,7 +100,7 @@ Error messages will be displayed in case the input for any command deviates from
 1. Negative height for canvas
 ```bash
 enter command: C -5 5
-2020-12-14 00:57:46.963 ERROR 60785 --- [           main] c.c.a.c.driver.CanvasPaintDriver         : Invalid canvas height/width
+2020-12-14 00:57:46.963 ERROR 60785 --- [           main] c.c.a.c.driver.CanvasPaintDriver         : Invalid canvas height/width, expected range (1, 50) height and (1, 50) width
 ```
 
 2. Coordinates outside the canvas boundary
@@ -141,6 +141,7 @@ If all the unit test cases are successful, then the above command should display
 
       i.   Two arguments expected one each for height and width, in order
       ii.  Both the arguments followed by the command character, should be non-zero positive numbers
+      iii. Max height and width are currently configured as 50
       iii. Vertical boundaries will be filled by '|' character and horizontal boundaries with '-'
       
 * Draw Line
